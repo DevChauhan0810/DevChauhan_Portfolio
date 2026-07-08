@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ============================================================
+     EDIT: page title (shows in the browser tab)
+     ============================================================ -->
+<title>Dev Chauhan · Software Engineer</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Hanken+Grotesk:wght@300..800&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================================
+     DESIGN TOKENS  (colours + fonts copied from the reference)
+     ============================================================ */
+  :root{
+    --bg:        #F1EDE3;   /* warm cream paper */
+    --ink:       #1B1A16;   /* near-black headlines */
+    --body:      #262319;   /* body paragraphs */
+    --green:     #2A5C46;   /* emerald accent (stat numbers) */
+    --green-deep:#1E4535;   /* deep forest green (contact bg) */
+    --on-green:      #ECE8DC;
+    --on-green-mute: #9CB0A4;
+    --mute:      #8C8676;   /* mono labels, tags, metadata */
+    --line:      rgba(27,26,22,0.14);
+    --line-soft: rgba(27,26,22,0.08);
+    --card:      rgba(255,255,255,0.32);
+
+    --serif: "Fraunces", Georgia, "Times New Roman", serif;
+    --sans:  "Hanken Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --mono:  "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior:smooth; scroll-padding-top:96px; }
+
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-weight:400;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    font-optical-sizing:auto;
+    overflow-x:hidden;
+  }
+
+  ::selection{ background:var(--green); color:var(--bg); }
+
+  .inner{
+    width:min(calc(100% - 2 * clamp(24px, 5vw, 48px)), 1440px);
+    margin:0 auto;
+  }
+
+  a{ color:inherit; text-decoration:none; }
+
+  /* ---------- utility: eyebrow label  "- LABEL" ---------- */
+  .kicker{
+    display:flex; align-items:center; gap:14px;
+    font-family:var(--mono);
+    font-size:12px; letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--mute);
+    margin-bottom:44px;
+  }
+  .kicker::before{
+    content:""; width:30px; height:1px; background:var(--green); flex:none;
+  }
+
+  /* ============================================================
+     NAV
+     ============================================================ */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    transition:background .3s ease, border-color .3s ease, backdrop-filter .3s ease;
+    border-bottom:1px solid transparent;
+  }
+  nav.scrolled{
+    background:rgba(241,237,227,0.82);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    width:min(calc(100% - 2 * clamp(24px, 5vw, 48px)), 1440px);
+    margin:0 auto;
+    padding:22px 0;
+  }
+  .brand{
+    font-family:var(--mono);
+    font-size:13px; letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--ink);
+  }
+  .nav-links{ display:flex; align-items:center; gap:clamp(16px,2vw,30px); }
+  .nav-links a{
+    font-family:var(--mono);
+    font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--mute);
+    padding-bottom:3px;
+    border-bottom:1.5px solid transparent;
+    transition:color .2s ease, border-color .2s ease;
+  }
+  .nav-links a:hover{ color:var(--ink); }
+  .nav-links a.active{ color:var(--ink); border-bottom-color:var(--green); }
+  .nav-links a .arrow{ color:var(--green); }
+
+  /* ============================================================
+     HERO
+     ============================================================ */
+  .hero{
+    padding-top:clamp(120px, 19vh, 196px);
+    padding-bottom:0;
+  }
+  .hero-meta{
+    font-family:var(--mono);
+    font-size:clamp(12px,1.3vw,13.5px); letter-spacing:0.04em;
+    color:var(--mute);
+    margin-bottom:clamp(30px,5.2vh,58px);
+  }
+  .hero-meta strong{ color:var(--green); font-weight:500; }
+  h1{
+    font-family:var(--serif);
+    font-weight:470;
+    font-size:clamp(2.3rem, min(4.6vw, 12vh), 5.3rem);
+    line-height:1.03;
+    letter-spacing:-0.02em;
+    color:var(--ink);
+  }
+  .hero-sub{
+    font-size:clamp(1.05rem,1.55vw,1.3rem);
+    line-height:1.5;
+    color:var(--body);
+    max-width:54ch;
+    margin-top:clamp(26px,4.2vh,46px);
+  }
+
+  /* ---------- stat row ---------- */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    margin-top:clamp(56px,9.5vh,104px);
+    border-top:1px solid var(--line);
+  }
+  .stat{ padding:clamp(26px,3.4vh,36px) clamp(20px,2.4vw,36px) clamp(34px,5.2vh,54px); }
+  .stat:first-child{ padding-left:0; }
+  .stat + .stat{ border-left:1px solid var(--line); }
+  .stat .num{
+    font-family:var(--serif);
+    font-weight:440;
+    color:var(--green);
+    font-size:clamp(2.6rem,4.8vw,4.4rem);
+    line-height:1;
+    display:inline-flex; align-items:baseline; gap:.12em;
+    letter-spacing:-0.01em;
+  }
+  .stat .num .unit{ font-size:0.42em; font-weight:460; letter-spacing:0; }
+  .stat .cap{
+    font-family:var(--mono);
+    font-size:12.5px; line-height:1.55;
+    color:var(--mute);
+    margin-top:clamp(18px,2.5vh,26px);
+    max-width:28ch;
+  }
+
+  /* ============================================================
+     GENERIC SECTION SPACING
+     ============================================================ */
+  section{ padding:clamp(64px,10vh,120px) 0; }
+  .section-title{
+    font-family:var(--serif);
+    font-style:italic;
+    font-weight:460;
+    font-size:clamp(2rem,4.2vw,3rem);
+    letter-spacing:-0.01em;
+    color:var(--ink);
+  }
+
+  /* ============================================================
+     ABOUT
+     ============================================================ */
+  .about-grid{
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:clamp(40px,6vw,88px);
+    align-items:start;
+  }
+  .about-grid h2{
+    font-family:var(--serif);
+    font-weight:450;
+    font-size:clamp(1.7rem,3.2vw,2.6rem);
+    line-height:1.08;
+    letter-spacing:-0.01em;
+    margin-bottom:clamp(28px,4vh,40px);
+  }
+  .about-grid p{
+    color:var(--body);
+    font-size:clamp(1rem,1.4vw,1.12rem);
+    line-height:1.65;
+  }
+  .about-grid p + p{ margin-top:1.4em; }
+
+  /* portrait placeholder - EDIT: swap the whole .portrait block for <img src="you.jpg" class="portrait"> */
+  .portrait{
+    position:relative;
+    width:100%;
+    aspect-ratio:4/5;
+    border-bottom:1px solid var(--ink);
+    background:
+      radial-gradient(120% 90% at 70% 15%, rgba(255,255,255,.55), rgba(0,0,0,0) 55%),
+      linear-gradient(150deg, #cfccc3 0%, #a9a69d 45%, #6f6d66 100%);
+    filter:grayscale(1) contrast(1.02);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .portrait .mono-init{
+    font-family:var(--serif);
+    font-size:clamp(5rem,12vw,9rem);
+    font-weight:420;
+    color:rgba(255,255,255,.72);
+    line-height:1;
+  }
+  .portrait .hint{
+    position:absolute; bottom:12px; right:14px;
+    font-family:var(--mono); font-size:10.5px; letter-spacing:0.12em;
+    text-transform:uppercase; color:rgba(255,255,255,.65);
+  }
+  /* Photo overlay: covers the monogram when profile.jpg loads; if it 404s it removes
+     itself (see onerror) and the "D" monogram shows instead. */
+  .portrait-img{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover; object-position:center 20%;
+  }
+
+  /* ============================================================
+     EXPERIENCE
+     ============================================================ */
+  .xp-head{ margin-bottom:clamp(32px,5vh,52px); }
+  .xp-row{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:clamp(24px,4vw,56px);
+    padding:clamp(36px,5vh,52px) 0;
+    border-top:1px solid var(--line);
+  }
+  .xp-row:last-child{ border-bottom:1px solid var(--line); }
+  .xp-co{
+    font-family:var(--mono);
+    font-size:14px; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--ink); font-weight:500;
+    margin-bottom:16px;
+  }
+  .xp-meta{
+    font-family:var(--mono);
+    font-size:12px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--mute); line-height:1.9;
+  }
+  .xp-title{
+    font-family:var(--serif); font-weight:460;
+    font-size:clamp(1.35rem,2.4vw,1.7rem);
+    letter-spacing:-0.01em;
+    margin-bottom:22px;
+  }
+  .xp-points p{
+    color:var(--body);
+    font-size:clamp(1rem,1.3vw,1.1rem);
+    line-height:1.6;
+    padding:18px 0;
+    border-top:1px solid var(--line-soft);
+  }
+  .xp-points p:first-child{ border-top:none; padding-top:0; }
+  .xp-points p:last-child{ padding-bottom:0; }
+
+  /* ============================================================
+     PROJECTS
+     ============================================================ */
+  .proj-head{ margin-bottom:clamp(32px,5vh,52px); }
+  .proj-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:clamp(18px,2vw,26px);
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:clamp(26px,3vw,38px);
+    display:flex; flex-direction:column;
+    transition:transform .3s ease, border-color .3s ease, background .3s ease;
+  }
+  .card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(27,26,22,0.28);
+    background:rgba(255,255,255,0.5);
+  }
+  .card-title{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--serif); font-weight:460;
+    font-size:clamp(1.35rem,2.2vw,1.65rem);
+    letter-spacing:-0.01em;
+    padding-bottom:clamp(20px,2.4vh,26px);
+    border-bottom:1px solid var(--line);
+    margin-bottom:clamp(22px,2.6vh,28px);
+  }
+  .card-title .arrow{ color:var(--green); font-size:0.8em; transition:transform .25s ease; }
+  .card:hover .card-title .arrow{ transform:translate(2px,-2px); }
+  .card-stat{
+    display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+    margin-bottom:clamp(18px,2.2vh,24px);
+  }
+  .card-stat .big{
+    font-family:var(--serif); font-weight:450;
+    color:var(--green);
+    font-size:clamp(1.6rem,2.6vw,2.1rem);
+    line-height:1; letter-spacing:-0.01em;
+  }
+  .card-stat .big .unit{ font-size:0.5em; }
+  .card-stat .lbl{
+    font-family:var(--mono); font-size:12px; letter-spacing:0.04em;
+    color:var(--mute);
+  }
+  .card p{
+    color:var(--body);
+    font-size:clamp(0.98rem,1.25vw,1.06rem);
+    line-height:1.6;
+  }
+  .card .note{
+    font-family:var(--mono); font-size:12px; letter-spacing:0.03em;
+    color:var(--mute); margin-top:14px;
+  }
+  .tags{
+    font-family:var(--mono); font-size:11px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--mute);
+    margin-top:auto; padding-top:clamp(24px,3vh,32px);
+  }
+  /* CTA card variant */
+  .card-cta{ justify-content:center; align-items:flex-start; }
+  .card-cta .card-title{ border-bottom:none; padding-bottom:0; margin-bottom:18px; }
+
+  /* ============================================================
+     STACK
+     ============================================================ */
+  .stack-row{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:clamp(20px,3vw,48px);
+    align-items:baseline;
+    padding:clamp(22px,3vh,30px) 0;
+    border-top:1px solid var(--line);
+  }
+  .stack-row:last-child{ border-bottom:1px solid var(--line); }
+  .stack-cat{
+    font-family:var(--mono);
+    font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--mute);
+  }
+  .stack-items{
+    font-size:clamp(1rem,1.5vw,1.18rem);
+    color:var(--ink);
+    line-height:1.7;
+  }
+  .stack-items .dot{ color:var(--mute); margin:0 .5em; }
+
+  /* ============================================================
+     ACHIEVEMENTS
+     ============================================================ */
+  .ach-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:clamp(32px,4vw,64px);
+  }
+  .ach{
+    border-top:1px solid var(--line);
+    padding-top:clamp(28px,4vh,40px);
+    display:flex; flex-direction:column;
+  }
+  .ach-award{
+    display:flex; align-items:center; gap:12px;
+    font-family:var(--mono);
+    font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--green);
+    margin-bottom:20px;
+  }
+  .ach-award::before{ content:""; width:24px; height:1px; background:var(--green); flex:none; }
+  .ach-title{
+    font-family:var(--serif); font-weight:460;
+    font-size:clamp(1.7rem,2.6vw,2.2rem);
+    line-height:1.05; letter-spacing:-0.01em;
+    margin-bottom:10px;
+  }
+  .ach-meta{
+    font-family:var(--mono);
+    font-size:12.5px; letter-spacing:0.05em;
+    color:var(--mute);
+    margin-bottom:22px;
+  }
+  .ach p{
+    color:var(--body);
+    font-size:clamp(1rem,1.3vw,1.1rem);
+    line-height:1.62;
+  }
+
+  /* ============================================================
+     COMPETITIVE PROGRAMMING  (cards reuse .card)
+     ============================================================ */
+  .cp-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:clamp(18px,2vw,26px);
+  }
+  .cp-handle{
+    font-family:var(--mono);
+    font-size:12px; letter-spacing:0.04em;
+    color:var(--mute);
+    margin-top:auto; padding-top:clamp(20px,2.6vh,28px);
+  }
+
+  /* ============================================================
+     CONTACT  (full-bleed green)
+     ============================================================ */
+  .contact{
+    background:var(--green-deep);
+    color:var(--on-green);
+    margin-top:clamp(40px,6vh,80px);
+  }
+  .contact .kicker{ color:var(--on-green-mute); }
+  .contact .kicker::before{ background:var(--on-green-mute); }
+  .contact h2{
+    font-family:var(--serif); font-weight:440;
+    font-size:clamp(3rem,8vw,6.2rem);
+    line-height:0.95; letter-spacing:-0.02em;
+    color:var(--on-green);
+    margin-bottom:clamp(48px,8vh,90px);
+  }
+  .contact h2 em{ font-style:italic; }
+
+  .clist{ border-top:1px solid rgba(236,232,220,0.18); }
+  .crow{
+    display:flex; align-items:baseline; gap:16px;
+    padding:clamp(16px,2.4vh,22px) 0;
+    border-bottom:1px solid rgba(236,232,220,0.18);
+    font-family:var(--mono);
+    transition:color .2s ease;
+  }
+  .crow .clabel{
+    font-size:12.5px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--on-green-mute);
+    width:110px; flex:none;
+  }
+  .crow .dots{
+    flex:1; height:1em;
+    background-image:radial-gradient(circle, var(--on-green-mute) 1px, transparent 1.4px);
+    background-size:8px 8px; background-position:0 65%; background-repeat:repeat-x;
+    opacity:.65;
+  }
+  .crow .cval{
+    font-size:13px; letter-spacing:0.02em;
+    color:var(--on-green);
+    display:inline-flex; align-items:center; gap:6px;
+    transition:opacity .2s ease;
+  }
+  .crow .cval .arrow{ color:var(--on-green-mute); }
+  a.crow:hover .cval{ opacity:.7; }
+
+  .foot{
+    display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap;
+    margin-top:clamp(56px,9vh,96px);
+    padding-top:clamp(24px,3vh,30px);
+    border-top:1px solid rgba(236,232,220,0.18);
+    font-family:var(--mono);
+    font-size:12px; letter-spacing:0.06em;
+    color:var(--on-green-mute);
+  }
+
+  /* ============================================================
+     REVEAL ANIMATION
+     ============================================================ */
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity .8s ease, transform .8s ease; }
+  .reveal.in{ opacity:1; transform:none; }
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width:900px){
+    .stats{ grid-template-columns:repeat(2,1fr); }
+    .stat:nth-child(3){ border-left:none; }
+    .stat:nth-child(3), .stat:nth-child(4){ border-top:1px solid var(--line); }
+  }
+  @media (max-width:820px){
+    .nav-links{ display:none; }
+    .about-grid{ grid-template-columns:1fr; }
+    .portrait{ max-width:360px; }
+    .xp-row{ grid-template-columns:1fr; gap:20px; }
+    .stack-row{ grid-template-columns:1fr; gap:8px; }
+    .proj-grid{ grid-template-columns:1fr; }
+    .cp-grid{ grid-template-columns:1fr; }
+    .ach-grid{ grid-template-columns:1fr; }
+  }
+  @media (max-width:560px){
+    .stats{ grid-template-columns:1fr; }
+    .stat{ border-left:none !important; border-top:1px solid var(--line); }
+    .stat:first-child{ border-top:none; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    html{ scroll-behavior:auto; }
+    .reveal{ opacity:1; transform:none; transition:none; }
+    .card, .card-title .arrow{ transition:none; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand">Dev Chauhan</a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#stack">Stack</a>
+      <a href="#contact">Contact</a>
+      <!-- EDIT: link your résumé PDF -->
+      <a href="https://drive.google.com/file/d/1xTJmBNAqb7fald4X1iM1PUu_OwaPfcck/view?usp=drive_link" target="_blank" rel="noopener">Résumé <span class="arrow">&#8599;</span></a>
+    </div>
+  </div>
+</nav>
+
+<span id="top"></span>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<header class="hero">
+  <div class="inner">
+    <div class="hero-top">
+      <p class="hero-meta reveal">
+        Software Engineer &middot; <strong>Full-Stack &amp; Distributed Systems</strong>
+        &middot; MS CS '27, Northeastern &middot; Boston, MA
+      </p>
+
+      <h1 class="reveal">I build full-stack products and the distributed systems that keep them running.</h1>
+
+      <p class="hero-sub reveal">
+        MS Computer Science student at Northeastern, building full-stack - React up
+        front, Spring Boot, Kafka, and Kubernetes behind it.
+      </p>
+    </div>
+
+    <!-- ---------- 4 STATS (pulled from the résumé) ---------- -->
+    <div class="stats reveal">
+      <div class="stat">
+        <div class="num">8</div>
+        <div class="cap">microservices in a Java &middot; Spring Cloud e-commerce platform</div>
+      </div>
+      <div class="stat">
+        <div class="num">60<span class="unit">%</span></div>
+        <div class="cap">faster deployments with Docker &amp; Kubernetes</div>
+      </div>
+      <div class="stat">
+        <div class="num">40<span class="unit">%</span></div>
+        <div class="cap">lift in user trust from privacy-first consent flows</div>
+      </div>
+      <div class="stat">
+        <div class="num">3.84<span class="unit">/4</span></div>
+        <div class="cap">graduate GPA &middot; Northeastern University</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     ABOUT
+     ============================================================ -->
+<section id="about">
+  <div class="inner">
+    <div class="kicker reveal">About</div>
+    <div class="about-grid">
+      <div class="reveal">
+        <h2>I work across the stack: React and Next.js front-ends, Spring Boot services, and the Kafka and Kubernetes behind them.</h2>
+        <p>
+          I'm an MS Computer Science student at Northeastern (3.84 GPA), with a B.Tech in
+          Information &amp; Communication Technology before that. Most recently I built a
+          privacy-first web toolkit at The Syntax Studio in Next.js and TypeScript -
+          WCAG-compliant components, GDPR-aligned consent flows, and SSR that cut page loads by 25%.
+        </p>
+        <p>
+          I like distributed systems and clean delivery: an 8-service e-commerce platform on
+          Spring Cloud, Kafka, and Kubernetes; a MERN portfolio tracker on AWS with a CI/CD
+          pipeline; and Android apps in Kotlin. Outside of shipping, I enjoy building algorithm
+          visualizers that make hard concepts click.
+        </p>
+      </div>
+
+      <!-- Upload your photo as profile.jpg to the repo (same folder as index.html) and it
+           appears automatically. Until then, the "D" monogram shows. -->
+      <div class="portrait reveal">
+        <span class="mono-init">D</span>
+        <span class="hint">add photo</span>
+        <img class="portrait-img" src="profile.jpg" alt="Dev Chauhan" onerror="this.remove()">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     EXPERIENCE   (from the résumé)
+     EDIT: add locations if you'd like them shown.
+     ============================================================ -->
+<section id="experience">
+  <div class="inner">
+    <div class="xp-head reveal"><span class="section-title">Experience</span></div>
+
+    <div class="xp-row reveal">
+      <div>
+        <div class="xp-co">The Syntax Studio</div>
+        <div class="xp-meta">Feb 2025 - May 2025</div>
+      </div>
+      <div>
+        <div class="xp-title">Software Engineer Intern</div>
+        <div class="xp-points">
+          <p>Engineered a privacy-first web toolkit in Next.js and TypeScript - SSR, caching, and lazy loading cut page loads 25% and drove a 60%+ user opt-out rate.</p>
+          <p>Built WCAG-compliant UI components and a User-First Score system with GDPR-aligned layered consent flows, reducing onboarding drop-offs 30% and lifting trust metrics over 40%.</p>
+          <p>Shipped and open-sourced the MVP on Vercel, accelerating feedback cycles 50% and hardening the prototype through community issue resolution.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="xp-row reveal">
+      <div>
+        <div class="xp-co">Beetonz Infotech</div>
+        <div class="xp-meta">May 2024 - Jul 2024</div>
+      </div>
+      <div>
+        <div class="xp-title">Android Developer Intern</div>
+        <div class="xp-points">
+          <p>Built and deployed a Group Task Management Android app in Kotlin with real-time task assignment, group creation, and status tracking.</p>
+          <p>Implemented Activity lifecycle, Fragment management, and Retrofit API integration, improving data consistency and UI responsiveness by 30%.</p>
+          <p>Profiled and optimized with Logcat and Android Profiler - cut crashes 25% and delivered an 8-week prototype on time in an Agile team.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PROJECTS   (from the résumé)
+     EDIT: point each card's link to a live demo or GitHub repo.
+     ============================================================ -->
+<section id="projects">
+  <div class="inner">
+    <div class="proj-head reveal"><span class="section-title">Projects</span></div>
+    <div class="proj-grid">
+
+      <a class="card reveal" href="https://github.com/DevChauhan0810" target="_blank" rel="noopener">
+        <div class="card-title">E-Commerce Microservices <span class="arrow">&#8599;</span></div>
+        <div class="card-stat">
+          <span class="big">8</span>
+          <span class="lbl">services &middot; event-driven &middot; +40% scalability</span>
+        </div>
+        <p>An 8-service e-commerce platform on Java, Spring Boot, and Spring Cloud with a secure,
+           event-driven Kafka + OAuth2 architecture - 60% faster to deploy on Docker and Kubernetes.</p>
+        <div class="tags">JAVA &middot; SPRING CLOUD &middot; KAFKA &middot; KUBERNETES &middot; POSTGRESQL</div>
+      </a>
+
+      <a class="card reveal" href="https://github.com/DevChauhan0810/Stock-Portfolio-Management" target="_blank" rel="noopener">
+        <div class="card-title">Stock Portfolio Manager <span class="arrow">&#8599;</span></div>
+        <div class="card-stat">
+          <span class="big">40<span class="unit">%</span></span>
+          <span class="lbl">better tracking efficiency</span>
+        </div>
+        <p>A MERN portfolio tracker with automated insights, real-time charts, and precise CAGR
+           and performance analytics - containerized and shipped on AWS EC2 with a CI/CD pipeline.</p>
+        <div class="tags">REACT &middot; NODE.JS &middot; MONGODB &middot; EXPRESS &middot; AWS EC2 &middot; DOCKER</div>
+      </a>
+
+      <a class="card reveal" href="https://github.com/DevChauhan0810/Pathfinding-visualizer" target="_blank" rel="noopener">
+        <div class="card-title">Pathfinding Visualizer <span class="arrow">&#8599;</span></div>
+        <div class="card-stat">
+          <span class="big">5</span>
+          <span class="lbl">algorithms, visualized step by step</span>
+        </div>
+        <p>An interactive visualizer for Dijkstra's, A*, Greedy Best-First, BFS, and DFS -
+           real-time, step-by-step demos that make each algorithm's behavior easy to see.</p>
+        <div class="tags">JAVASCRIPT &middot; HTML &middot; CSS &middot; ALGORITHMS</div>
+      </a>
+
+      <a class="card reveal" href="https://github.com/DevChauhan0810" target="_blank" rel="noopener">
+        <div class="card-title">Distributed AI-Ready Platform <span class="arrow">&#8599;</span></div>
+        <div class="card-stat">
+          <span class="big">40<span class="unit">%</span></span>
+          <span class="lbl">lower inter-service latency vs REST</span>
+        </div>
+        <p>A high-performance Go backend implementing the Model Context Protocol (MCP) for scalable
+           AI-agent integration, on an event-driven AWS SQS/S3 architecture built for asynchronous,
+           high-concurrency workloads. Dockerized microservices talk over gRPC for low-latency calls.</p>
+        <div class="tags">GO &middot; gRPC &middot; MCP &middot; AWS SQS/S3 &middot; DOCKER &middot; POSTGRESQL</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     STACK   (from the résumé)
+     ============================================================ -->
+<section id="stack">
+  <div class="inner">
+    <div class="kicker reveal">Stack</div>
+
+    <div class="stack-row reveal">
+      <div class="stack-cat">Languages</div>
+      <div class="stack-items">Java <span class="dot">&middot;</span> C/C++ <span class="dot">&middot;</span> Python <span class="dot">&middot;</span> TypeScript <span class="dot">&middot;</span> JavaScript <span class="dot">&middot;</span> C# <span class="dot">&middot;</span> Go <span class="dot">&middot;</span> SQL</div>
+    </div>
+    <div class="stack-row reveal">
+      <div class="stack-cat">Backend</div>
+      <div class="stack-items">Spring Boot <span class="dot">&middot;</span> Spring Cloud <span class="dot">&middot;</span> Node.js <span class="dot">&middot;</span> Express <span class="dot">&middot;</span> .NET <span class="dot">&middot;</span> REST <span class="dot">&middot;</span> GraphQL <span class="dot">&middot;</span> OAuth2</div>
+    </div>
+    <div class="stack-row reveal">
+      <div class="stack-cat">Frontend</div>
+      <div class="stack-items">React <span class="dot">&middot;</span> Next.js <span class="dot">&middot;</span> Angular <span class="dot">&middot;</span> HTML <span class="dot">&middot;</span> CSS</div>
+    </div>
+    <div class="stack-row reveal">
+      <div class="stack-cat">Data &amp; Messaging</div>
+      <div class="stack-items">PostgreSQL <span class="dot">&middot;</span> MySQL <span class="dot">&middot;</span> MongoDB <span class="dot">&middot;</span> OracleDB <span class="dot">&middot;</span> DynamoDB <span class="dot">&middot;</span> Redis <span class="dot">&middot;</span> Kafka</div>
+    </div>
+    <div class="stack-row reveal">
+      <div class="stack-cat">Cloud &amp; DevOps</div>
+      <div class="stack-items">AWS <span class="dot">&middot;</span> Docker <span class="dot">&middot;</span> Kubernetes <span class="dot">&middot;</span> CI/CD <span class="dot">&middot;</span> Git <span class="dot">&middot;</span> Linux</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     COMPETITIVE PROGRAMMING   (from the profiles)
+     ============================================================ -->
+<section id="cp">
+  <div class="inner">
+    <div class="kicker reveal">Competitive Programming</div>
+    <div class="cp-grid">
+
+      <a class="card reveal" href="https://leetcode.com/u/DevChauhan_0810/" target="_blank" rel="noopener">
+        <div class="card-title">LeetCode <span class="arrow">&#8599;</span></div>
+        <div class="card-stat">
+          <span class="big">313</span>
+          <span class="lbl">problems solved</span>
+        </div>
+        <p>Contest rating of 1548 - top 32.62% globally - across easy, medium, and hard problems.</p>
+        <div class="cp-handle">@DevChauhan_0810</div>
+      </a>
+
+      <a class="card reveal" href="https://www.codechef.com/users/dev0810" target="_blank" rel="noopener">
+        <div class="card-title">CodeChef <span class="arrow">&#8599;</span></div>
+        <div class="card-stat">
+          <span class="big">1389</span>
+          <span class="lbl">rating &middot; 1&#9733; Div 4</span>
+        </div>
+        <p>30 rated contests entered, with a peak rating of 1455 through regular participation.</p>
+        <div class="cp-handle">@dev0810</div>
+      </a>
+
+      <a class="card reveal" href="https://codeforces.com/profile/dev0810" target="_blank" rel="noopener">
+        <div class="card-title">Codeforces <span class="arrow">&#8599;</span></div>
+        <div class="card-stat">
+          <span class="big">823</span>
+          <span class="lbl">contest rating &middot; peak 953</span>
+        </div>
+        <p>Competing in rated Div. 2 rounds and sharpening algorithmic problem-solving under time pressure.</p>
+        <div class="cp-handle">@dev0810</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ACHIEVEMENTS
+     ============================================================ -->
+<section id="achievements">
+  <div class="inner">
+    <div class="kicker reveal">Achievements</div>
+    <div class="ach-grid">
+
+      <article class="ach reveal">
+        <div class="ach-award">Winner &middot; Best Project in Technology</div>
+        <h3 class="ach-title">NUtrition</h3>
+        <div class="ach-meta">Hack NUACM &middot; 24-hour hackathon &middot; 2025</div>
+        <p>
+          A web app that lets students scan a barcode or search to instantly check the
+          ingredients and allergens in campus dining - making dining halls safer for anyone
+          with dietary restrictions, one scan at a time. Built with a small team in a single
+          24-hour sprint and awarded Best Project in Technology.
+        </p>
+        <div class="tags">NEXT.JS &middot; MONGODB &middot; BARCODE SCANNING</div>
+      </article>
+
+      <article class="ach reveal">
+        <div class="ach-award">Multi-Agent Hackathon &middot; Weights &amp; Biases &times; MIT</div>
+        <h3 class="ach-title">Pied Piper</h3>
+        <div class="ach-meta">Multi-Agent Orchestration Hackathon &middot; BosTechWeek &middot; 2026</div>
+        <p>
+          An autonomous, agentic travel-planning assistant that lives inside Slack and turns
+          raw user intent into a structured itinerary. It runs a dual-model architecture -
+          Llama&#8209;3.3&#8209;70B as the lead orchestrator for multilingual intent routing,
+          delegating high-speed parsing to DeepSeek&#8209;V4 - with an Agentic Prompt Optimizer
+          on W&amp;B Weave that benchmarks competing prompt strategies in real time. Live event
+          data comes from the Ticketmaster API, and chosen plans sync straight to Google Calendar.
+        </p>
+        <div class="tags">LLAMA 3.3 &middot; DEEPSEEK-V4 &middot; W&amp;B WEAVE &middot; SLACK API</div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONTACT   (from the résumé)
+     EDIT: add your GitHub URL + link your résumé PDF.
+     ============================================================ -->
+<section class="contact" id="contact">
+  <div class="inner">
+    <div class="kicker reveal">Contact</div>
+    <h2 class="reveal">Get in <em>touch.</em></h2>
+
+    <div class="clist reveal">
+      <a class="crow" href="mailto:devhchauhan081003@gmail.com">
+        <span class="clabel">Email</span>
+        <span class="dots"></span>
+        <span class="cval">devhchauhan081003@gmail.com <span class="arrow">&#8599;</span></span>
+      </a>
+      <a class="crow" href="tel:+18572333382">
+        <span class="clabel">Phone</span>
+        <span class="dots"></span>
+        <span class="cval">(857) 233-3382 <span class="arrow">&#8599;</span></span>
+      </a>
+      <a class="crow" href="https://www.linkedin.com/in/devchauhan0810/" target="_blank" rel="noopener">
+        <span class="clabel">LinkedIn</span>
+        <span class="dots"></span>
+        <span class="cval">in/devchauhan0810 <span class="arrow">&#8599;</span></span>
+      </a>
+      <a class="crow" href="https://github.com/DevChauhan0810" target="_blank" rel="noopener">
+        <span class="clabel">GitHub</span>
+        <span class="dots"></span>
+        <span class="cval">DevChauhan0810 <span class="arrow">&#8599;</span></span>
+      </a>
+      <!-- EDIT: link your résumé PDF -->
+      <a class="crow" href="https://drive.google.com/file/d/1xTJmBNAqb7fald4X1iM1PUu_OwaPfcck/view?usp=drive_link" target="_blank" rel="noopener">
+        <span class="clabel">Résumé</span>
+        <span class="dots"></span>
+        <span class="cval">pdf <span class="arrow">&#8599;</span></span>
+      </a>
+    </div>
+
+    <div class="foot">
+      <span>&copy; 2026 Dev Chauhan &middot; Boston, MA</span>
+      <span>Set in Fraunces, Hanken Grotesk, and Geist Mono.</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  // nav background on scroll
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 24);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive:true });
+
+  // reveal on scroll
+  const revealIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); revealIO.unobserve(e.target); } });
+  }, { threshold:0.12, rootMargin:'0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => revealIO.observe(el));
+
+  // scroll-spy: highlight active nav link
+  const links = [...document.querySelectorAll('.nav-links a')].filter(a => a.getAttribute('href')?.startsWith('#'));
+  const map = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const sections = [...map.keys()].map(id => document.getElementById(id)).filter(Boolean);
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting){
+        links.forEach(a => a.classList.remove('active'));
+        map.get(e.target.id)?.classList.add('active');
+      }
+    });
+  }, { rootMargin:'-45% 0px -50% 0px', threshold:0 });
+  sections.forEach(s => spy.observe(s));
+
+  // click-to-scroll: smoothly scroll to the target section, offset for the fixed nav
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const href = a.getAttribute('href');
+      if (href === '#'){ e.preventDefault(); return; } // placeholder link - do nothing
+      const target = href.length > 1 ? document.getElementById(href.slice(1)) : null;
+      if (href.length > 1 && !target) return; // unknown anchor - leave default behaviour
+      e.preventDefault();
+      if (!target){ window.scrollTo({ top:0, behavior:'smooth' }); return; }
+      const navH = (document.getElementById('nav')?.offsetHeight) || 80;
+      const y = target.getBoundingClientRect().top + window.pageYOffset - (navH + 14);
+      window.scrollTo({ top: Math.max(0, y), behavior:'smooth' });
+      // reflect the section in the highlighted nav item immediately
+      links.forEach(l => l.classList.remove('active'));
+      if (map.has(href.slice(1))) map.get(href.slice(1)).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
