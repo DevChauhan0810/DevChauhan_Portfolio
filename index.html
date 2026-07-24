@@ -187,7 +187,7 @@
     display:grid;
     grid-template-columns:1.15fr 0.85fr;
     gap:clamp(40px,6vw,88px);
-    align-items:stretch;
+    align-items:center;
   }
   .about-grid h2{
     font-family:var(--serif);
@@ -211,52 +211,49 @@
     margin-bottom:0.7em;
   }
 
-  /* portrait: the "D" monogram shows only if profile.jpg.jpeg fails to load.
-     On desktop the frame stretches to match the About text height (grid stretch). */
-  .portrait{
-    position:relative;
-    width:100%;
-    border-bottom:1px solid var(--ink);
-    background:
-      radial-gradient(120% 90% at 70% 15%, rgba(255,255,255,.55), rgba(0,0,0,0) 55%),
-      linear-gradient(150deg, #cfccc3 0%, #a9a69d 45%, #6f6d66 100%);
+  /* ---------- CONFIG CARD (deep-green code editor) ---------- */
+  .config-card{
+    font-family:var(--mono);
+    border-radius:12px;
     overflow:hidden;
+    background:var(--green-deep);
+    border:1px solid rgba(236,232,220,0.12);
+    box-shadow:0 26px 64px -32px rgba(27,26,22,0.55);
+    transition:transform .3s ease, box-shadow .3s ease;
   }
-  .portrait .mono-init{
-    position:absolute; inset:0;
-    display:flex; align-items:center; justify-content:center;
-    font-family:var(--serif);
-    font-size:clamp(5rem,12vw,9rem);
-    font-weight:420;
-    color:rgba(255,255,255,.72);
-    line-height:1;
-    filter:grayscale(1);
+  .config-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 34px 74px -30px rgba(27,26,22,0.6);
   }
-  .portrait .hint{
-    position:absolute; bottom:12px; right:14px; z-index:3;
-    font-family:var(--mono); font-size:10.5px; letter-spacing:0.12em;
-    text-transform:uppercase; color:rgba(255,255,255,.65);
+  .config-bar{
+    display:flex; align-items:center; gap:14px;
+    padding:14px 18px;
+    font-size:12.5px; letter-spacing:0.02em;
+    background:#173829;
+    color:var(--on-green-mute);
+    border-bottom:1px solid rgba(236,232,220,0.1);
   }
-  /* Blurred copy fills the space around the photo so there are no blank bars. */
-  .portrait-bg{
-    position:absolute; inset:0; z-index:1;
-    width:100%; height:100%;
-    object-fit:cover;
-    filter:grayscale(1) blur(26px) brightness(.9);
-    transform:scale(1.2);
-    transition:filter .55s ease;
+  .config-bar .dots{ display:flex; gap:7px; }
+  .config-bar .dots span{ width:11px; height:11px; border-radius:50%; display:block; }
+  .config-bar .dots span:nth-child(1){ background:#E8907E; }
+  .config-bar .dots span:nth-child(2){ background:#E6C066; }
+  .config-bar .dots span:nth-child(3){ background:#8FD6A6; }
+  .config-body{
+    padding:22px 24px 26px;
+    font-size:clamp(12px,1.05vw,13.5px);
+    line-height:2;
+    color:#D6E2DA;
   }
-  /* The full photo, uncropped, filling the frame the grid provides. */
-  .portrait-img{
-    position:absolute; inset:0; z-index:2;
-    width:100%; height:100%;
-    object-fit:contain;
-    filter:grayscale(1);
-    transition:filter .55s ease;
-  }
-  /* Hover reveals full colour, like the original upload. */
-  .portrait:hover .portrait-bg{ filter:grayscale(0) blur(26px) brightness(.95); }
-  .portrait:hover .portrait-img{ filter:grayscale(0); }
+  .config-body .ln{ display:grid; grid-template-columns:22px 1fr; gap:16px; }
+  .config-body .num{ opacity:.4; text-align:right; user-select:none; }
+  .config-body .indent{ padding-left:1.6em; }
+  .config-body .kw{ color:#E7B7A0; }   /* keyword */
+  .config-body .var{ color:#9FD3C4; }  /* variable */
+  .config-body .key{ color:#BFE3CC; }  /* property */
+  .config-body .str{ color:#EBD9A8; }  /* string */
+  .config-body .val{ color:#F0B27A; }  /* number / bool */
+  .config-body .com{ color:#7C9689; font-style:italic; }
+  .config-body .pn{ color:#9CB0A4; }   /* punctuation */
 
   /* ============================================================
      EXPERIENCE
@@ -515,7 +512,7 @@
   @media (max-width:820px){
     .nav-links{ display:none; }
     .about-grid{ grid-template-columns:1fr; }
-    .portrait{ max-width:360px; aspect-ratio:4/5; }
+    .config-card{ max-width:460px; }
     .xp-row{ grid-template-columns:1fr; gap:20px; }
     .stack-row{ grid-template-columns:1fr; gap:8px; }
     .proj-grid{ grid-template-columns:1fr; }
@@ -531,7 +528,7 @@
   @media (prefers-reduced-motion:reduce){
     html{ scroll-behavior:auto; }
     .reveal{ opacity:1; transform:none; transition:none; }
-    .card, .card-title .arrow{ transition:none; }
+    .card, .card-title .arrow, .config-card{ transition:none; }
   }
 </style>
 </head>
@@ -620,13 +617,22 @@
         </p>
       </div>
 
-      <!-- Upload your photo as profile.jpg to the repo (same folder as index.html) and it
-           appears automatically. Until then, the "D" monogram shows. -->
-      <div class="portrait reveal">
-        <span class="mono-init">D</span>
-        <span class="hint">add photo</span>
-        <img class="portrait-bg" src="profile.jpg.jpeg" alt="" aria-hidden="true" onerror="this.remove()">
-        <img class="portrait-img" src="profile.jpg.jpeg" alt="Dev Chauhan" onerror="this.remove()">
+      <!-- Deep-green dev.config.ts card (replaces the photo). Edit values below to update. -->
+      <div class="config-card reveal">
+        <div class="config-bar">
+          <div class="dots"><span></span><span></span><span></span></div>
+          dev.config.ts
+        </div>
+        <div class="config-body">
+          <div class="ln"><span class="num">1</span><span><span class="kw">const</span> <span class="var">dev</span> <span class="pn">= {</span></span></div>
+          <div class="ln"><span class="num">2</span><span class="indent"><span class="key">role</span><span class="pn">:</span> <span class="str">"Software Engineer"</span><span class="pn">,</span></span></div>
+          <div class="ln"><span class="num">3</span><span class="indent"><span class="key">degree</span><span class="pn">:</span> <span class="str">"MS CS @ Northeastern"</span><span class="pn">,</span></span></div>
+          <div class="ln"><span class="num">4</span><span class="indent"><span class="key">gpa</span><span class="pn">:</span> <span class="val">3.84</span><span class="pn">,</span></span></div>
+          <div class="ln"><span class="num">5</span><span class="indent"><span class="key">base</span><span class="pn">:</span> <span class="str">"Boston, MA"</span><span class="pn">,</span></span></div>
+          <div class="ln"><span class="num">6</span><span class="indent"><span class="key">focus</span><span class="pn">:</span> <span class="pn">[</span><span class="str">"Full-Stack"</span><span class="pn">,</span> <span class="str">"Distributed Systems"</span><span class="pn">,</span> <span class="str">"Cloud"</span><span class="pn">],</span></span></div>
+          <div class="ln"><span class="num">7</span><span class="indent"><span class="key">openToWork</span><span class="pn">:</span> <span class="val">true</span><span class="pn">,</span> <span class="com">// relocating ok</span></span></div>
+          <div class="ln"><span class="num">8</span><span><span class="pn">};</span></span></div>
+        </div>
       </div>
     </div>
   </div>
