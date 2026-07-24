@@ -203,6 +203,13 @@
     line-height:1.65;
   }
   .about-grid p + p{ margin-top:1.4em; }
+  .about-grid .lead-label{
+    display:block;
+    font-family:var(--mono);
+    font-size:12px; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--green);
+    margin-bottom:0.7em;
+  }
 
   /* portrait: the "D" monogram shows only if profile.jpg.jpeg fails to load.
      On desktop the frame stretches to match the About text height (grid stretch). */
@@ -605,10 +612,11 @@
           I am a passionate Computer Science graduate student at Northeastern University with a strong background in web development, cloud technologies, and machine learning. I enjoy building scalable, efficient, and innovative solutions that solve real-world problems. My journey in tech has been driven by a continuous desire to learn and explore new technologies.
         </p>
         <p>
-          I like distributed systems and clean delivery: an 8-service e-commerce platform on
-          Spring Cloud, Kafka, and Kubernetes; a MERN portfolio tracker on AWS with a CI/CD
-          pipeline; and Android apps in Kotlin. Outside of shipping, I enjoy building algorithm
-          visualizers that make hard concepts click.
+          <span class="lead-label">Leadership Impact</span>
+          As Core Committee Member for Competitive Programming at ACM Student Chapter PDEU, I organized a two-day DSA workshop covering C++, linear structures, and graph algorithms for 100+ students, and facilitated peer learning sessions for algorithmic problem-solving.
+        </p>
+        <p>
+          As a Core Committee Member for Competitive Programming at Encode Club, PDEU's student coding community, I helped grow a collaborative learning space and organized CodeWars - the club's annual algorithmic-coding competition.
         </p>
       </div>
 
